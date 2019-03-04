@@ -27,7 +27,7 @@ push trigger
 	
 	String sendCommand$[250];
     initializedelegates();
-	makestring(sendCommand$,"http://api.openweathermap.org/data/2.5/weather?id=2643743&units=metric&appid=2b37ce02b4a4ff68f6ba9a415da08a3e");
+	makestring(sendCommand$,"http://api.openweathermap.org/data/2.5/weather?id=2643743&units=metric&appid=[ID]");
 	Out$ = WeatherClientMain.GetData(sendCommand$);
 	ReturnTempToSimpl(new$);
 	Trace("Temp:%s | new:%s",Temp$,New$);
