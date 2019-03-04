@@ -1,0 +1,115 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using Crestron.SimplSharp;
+using Crestron.SimplSharp.CrestronIO;
+using Crestron.SimplSharp.Net.Http;
+using Newtonsoft.Json;
+
+
+namespace WeatherClient
+{
+    public static class WeatherClientMain
+    {
+        
+        public static string sJsonData;
+
+        public delegate void TempDelegate(double Value);
+        public delegate void StringTemp(SimplSharpString Value);
+        public static TempDelegate TempToSimpl { get; set; }
+        public static StringTemp TempStringToSimpl { get; set; }
+
+        public static Main weatherData;
+
+        public static string GetData(string _url)
+        {
+            sJsonData = "";
+            try
+            {
+                Console.WriteLine(_url);
+                HttpClient myHttpClient = new HttpClient();
+                HttpClientRequest myHttpRequest = new HttpClientRequest();
+                HttpClientResponse myHttpResponse;
+                myHttpClient.KeepAlive = false;
+                myHttpRequest.RequestType = Crestron.SimplSharp.Net.Http.RequestType.Get;
+                myHttpRequest.Url.Parse(String.Format("{0}", _url));
+                myHttpResponse = myHttpClient.Dispatch(myHttpRequest);
+                sJsonData = myHttpResponse.ContentString;
+                
+            
+            weatherData = JsonConvert.DeserializeObject<Main>(sJsonData);
+            Console.WriteLine(weatherData.temp);
+            TempToSimpl(weatherData.temp);
+            TempStringToSimpl(weatherData.temp.ToString("N0"));
+            
+            }
+            catch (Exception e)
+            {
+                ErrorLog.Notice("Error in Http Request: {0}", e);
+            }
+            return sJsonData;
+            
+            
+        }
+    }
+    public class Coord
+    {
+        public double lon { get; set; }
+        public double lat { get; set; }
+    }
+
+    public class Weather
+    {
+        public int id { get; set; }
+        public string main { get; set; }
+        public string description { get; set; }
+        public string icon { get; set; }
+    }
+
+    public class Main
+    {
+        public double temp { get; set; }
+        public int pressure { get; set; }
+        public int humidity { get; set; }
+        public int temp_min { get; set; }
+        public int temp_max { get; set; }
+    }
+
+    public class Wind
+    {
+        public int speed { get; set; }
+        public int deg { get; set; }
+    }
+
+    public class Clouds
+    {
+        public int all { get; set; }
+    }
+
+    public class Sys
+    {
+        public int type { get; set; }
+        public int id { get; set; }
+        public double message { get; set; }
+        public string country { get; set; }
+        public int sunrise { get; set; }
+        public int sunset { get; set; }
+    }
+
+    public class RootObject
+    {
+        public Coord coord { get; set; }
+        public List<Weather> weather { get; set; }
+        public string @base { get; set; }
+        public Main main { get; set; }
+        public int visibility { get; set; }
+        public Wind wind { get; set; }
+        public Clouds clouds { get; set; }
+        public int dt { get; set; }
+        public Sys sys { get; set; }
+        public int id { get; set; }
+        public string name { get; set; }
+        public int cod { get; set; }
+    }
+}
