@@ -15,9 +15,9 @@ namespace WeatherClient
         
         public static string sJsonData;
 
-        public delegate void TempDelegate(double Value);
+        //public delegate void TempDelegate(double Value);
         public delegate void StringTemp(SimplSharpString Value);
-        public static TempDelegate TempToSimpl { get; set; }
+        //public static TempDelegate TempToSimpl { get; set; }
         public static StringTemp TempStringToSimpl { get; set; }
 
         public static Main weatherData;
@@ -40,7 +40,7 @@ namespace WeatherClient
             
             weatherData = JsonConvert.DeserializeObject<Main>(sJsonData);
             Console.WriteLine(weatherData.temp);
-            TempToSimpl(weatherData.temp);
+            //TempToSimpl(weatherData.temp);
             TempStringToSimpl(weatherData.temp.ToString("N0"));
             
             }
