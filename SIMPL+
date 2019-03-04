@@ -1,0 +1,40 @@
+#DEFAULT_VOLATILE
+#ENABLE_STACK_CHECKING
+#ENABLE_TRACE
+#USER_SIMPLSHARP_LIBRARY "Weather"
+
+DIGITAL_INPUT init,trigger;
+
+STRING_OUTPUT Response$,Out$;
+
+STRING Temp$[255],new$[50];
+
+Function initializeDelegates()
+{
+	RegisterDelegate(WeatherClientMain, TempStringToSimpl, ReturnTemptoSimpl);	
+}
+
+Callback Function ReturnTemptoSimpl(string _temp)
+{
+	Temp$ = _temp;
+}
+Function initMain()
+{
+   	InitializeDelegates();
+}
+push trigger
+{
+	
+	String sendCommand$[250];
+    initializedelegates();
+	makestring(sendCommand$,"http://api.openweathermap.org/data/2.5/weather?id=2643743&units=metric&appid=2b37ce02b4a4ff68f6ba9a415da08a3e");
+	Out$ = WeatherClientMain.GetData(sendCommand$);
+	ReturnTempToSimpl(new$);
+	Trace("Temp:%s | new:%s",Temp$,New$);
+	Response$ = Temp$;
+	
+}
+push init
+{
+	initmain();
+}
